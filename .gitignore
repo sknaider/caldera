@@ -15,9 +15,18 @@ core.db
 .venv/
 venv/
 calderaenv/
+# Environment and secrets
 .env
+.env.local
+.env.*.local
+*.env
+
+# Configuration files (use .example templates)
 conf/*.yml
-!conf/default.yml
+!conf/*.yml.example
+conf/local.yml
+conf/production.yml
+conf/staging.yml
 data/object_store
 data/fact_store
 data/results/*

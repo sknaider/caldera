@@ -1,5 +1,6 @@
 [flake8]
-max-line-length = 180
+max-line-length = 120
+max-complexity = 10
 exclude =
     .svn,
     CVS,
@@ -9,7 +10,23 @@ exclude =
     __pycache__,
     .tox,
     venv,
-    .venv
-
+    .venv,
+    node_modules,
+    build,
+    dist
+ignore =
+    # E203: whitespace before ':' (conflicts with black)
+    E203,
+    # W503: line break before binary operator (conflicts with black)
+    W503,
+    # E501: line too long (handled by max-line-length)
+    E501
 per-file-ignores =
-    app/service/file_svc.py:B305
+    # Allow subprocess calls with configurable paths
+    app/service/file_svc.py:B305,
+    # Allow imports in __init__.py
+    __init__.py:F401,
+    # Allow asserts in tests
+    tests/*:S101,
+    # Complex parsers may exceed complexity limit temporarily
+    app/utility/base_parser.py:C901

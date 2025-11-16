@@ -10,9 +10,12 @@ from datetime import datetime, timezone
 from importlib import import_module
 from random import randint, choice
 from enum import Enum
+from pathlib import Path
 
 import marshmallow as ma
 import marshmallow_enum as ma_enum
+
+from app.utility.config_security import load_env_file, load_secure_config, ConfigurationError
 
 
 class BaseWorld:
@@ -71,8 +74,29 @@ class BaseWorld:
     @staticmethod
     def strip_yml(path):
         if path:
+            # Load .env file if it exists (only once, first time)
+            if not hasattr(BaseWorld, '_env_loaded'):
+                env_file = Path('.env')
+                if env_file.exists():
+                    logging.info("Loading environment variables from .env file")
+                    load_env_file(env_file)
+                BaseWorld._env_loaded = True
+
             with open(path, encoding='utf-8') as seed:
-                return list(yaml.load_all(seed, Loader=yaml.FullLoader))
+                configs = list(yaml.load_all(seed, Loader=yaml.FullLoader))
+
+            # Apply security validation for main config
+            if 'conf/' in path and configs:
+                try:
+                    # Only validate main config file, not agents/payloads
+                    if any(keyword in path for keyword in ['default.yml', 'local.yml', 'production.yml', 'staging.yml']):
+                        configs[0] = load_secure_config(configs[0])
+                        logging.info(f"Configuration loaded and validated from {path}")
+                except ConfigurationError as e:
+                    logging.error(f"Configuration security validation failed: {e}")
+                    raise
+
+            return configs
         return []
 
     @staticmethod

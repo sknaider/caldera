@@ -1,0 +1,78 @@
+ability_refresh: 60
+# Security: Set these values via environment variables
+# CALDERA_API_KEY_BLUE - Blue team API key
+# CALDERA_API_KEY_RED - Red team API key
+api_key_blue: ${CALDERA_API_KEY_BLUE}
+api_key_red: ${CALDERA_API_KEY_RED}
+app.contact.dns.domain: mycaldera.caldera
+app.contact.dns.socket: 0.0.0.0:8853
+# CALDERA_GIST_API_KEY - GitHub Gist API key for exfiltration
+app.contact.gist: ${CALDERA_GIST_API_KEY}
+app.contact.html: /weather
+app.contact.http: http://0.0.0.0:8888
+# CALDERA_SLACK_API_KEY - Slack API token
+# CALDERA_SLACK_BOT_ID - Slack bot ID
+# CALDERA_SLACK_CHANNEL_ID - Slack channel ID
+app.contact.slack.api_key: ${CALDERA_SLACK_API_KEY}
+app.contact.slack.bot_id: ${CALDERA_SLACK_BOT_ID}
+app.contact.slack.channel_id: ${CALDERA_SLACK_CHANNEL_ID}
+# CALDERA_SSH_KEY_FILE - Path to SSH host key file
+# CALDERA_SSH_KEY_PASSPHRASE - SSH key passphrase
+app.contact.tunnel.ssh.host_key_file: ${CALDERA_SSH_KEY_FILE}
+app.contact.tunnel.ssh.host_key_passphrase: ${CALDERA_SSH_KEY_PASSPHRASE}
+app.contact.tunnel.ssh.socket: 0.0.0.0:8022
+app.contact.tunnel.ssh.user_name: ${CALDERA_SSH_USERNAME:-sandcat}
+# CALDERA_SSH_PASSWORD - SSH user password
+app.contact.tunnel.ssh.user_password: ${CALDERA_SSH_PASSWORD}
+app.contact.ftp.host: 0.0.0.0
+app.contact.ftp.port: 2222
+# CALDERA_FTP_PASSWORD - FTP password
+app.contact.ftp.pword: ${CALDERA_FTP_PASSWORD}
+app.contact.ftp.server.dir: ftp_dir
+app.contact.ftp.user: ${CALDERA_FTP_USER:-caldera_user}
+app.contact.tcp: 0.0.0.0:7010
+app.contact.udp: 0.0.0.0:7011
+app.contact.websocket: 0.0.0.0:7012
+objects.planners.default: atomic
+# CALDERA_CRYPT_SALT - Cryptographic salt (generate with: python -c "import secrets; print(secrets.token_hex(32))")
+crypt_salt: ${CALDERA_CRYPT_SALT}
+# CALDERA_ENCRYPTION_KEY - Encryption key (generate with: python -c "import secrets; print(secrets.token_hex(32))")
+encryption_key: ${CALDERA_ENCRYPTION_KEY}
+exfil_dir: /tmp/caldera
+reachable_host_traits:
+- remote.host.fqdn
+- remote.host.ip
+host: 0.0.0.0
+plugins:
+- access
+- atomic
+- compass
+- debrief
+- fieldmanual
+- manx
+- response
+- sandcat
+- stockpile
+- training
+port: 8888
+reports_dir: /tmp
+auth.login.handler.module: default
+requirements:
+  go:
+    command: go version
+    type: installed_program
+    version: 1.19
+  python:
+    attr: version
+    module: sys
+    type: python_module
+    version: 3.9.0
+users:
+  blue:
+    # CALDERA_BLUE_PASSWORD - Blue team password
+    blue: ${CALDERA_BLUE_PASSWORD}
+  red:
+    # CALDERA_RED_ADMIN_PASSWORD - Red team admin password
+    # CALDERA_RED_PASSWORD - Red team password
+    admin: ${CALDERA_RED_ADMIN_PASSWORD}
+    red: ${CALDERA_RED_PASSWORD}
